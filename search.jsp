@@ -7,11 +7,15 @@
 	String ctxPath = request.getContextPath();
 	//			/TeamMVC
 %>
+
+<jsp:include page="../header.jsp" />
+
 <style>
 	div#Menu_Items{
 		visibility:hidden;
 	}
 	div#contents{
+		width: 95%;
 		text-decoration: gray;
 	}
 	div.titleArea{
@@ -75,10 +79,7 @@
 		padding: 0 10px 0 0 ;
 		display: inline;
 	}
-	div.listBox{
-		margin: 10px
-		padding: 10%
-	}
+	
 	ul{
 		padding-inline-start: 0px;
     	list-style-type: none;
@@ -95,7 +96,8 @@
     	line-height: 20px;
 	}
 	img{
-		width: 100%;
+		width: 280px;
+		height: 350px;
 	    position: relative;
 	    margin: 0 0 15px;
 	    text-align: center;
@@ -104,14 +106,38 @@
 	button#showMore{
 		background-color: light-gray;
 		color: gray; 
-		margin: 10px auto;
-		
+		margin: 0 auto;
 	}
 	
 
 </style>
 
-<jsp:include page="../header.jsp" />
+<script type="text/javascript">
+
+   $(document).ready(function(){
+	   
+	    $("button#search").click(function(){
+	    	
+	    	var category = $("select#category").val();
+	    	var searchname = $("input#keyword").val();
+	    	
+	     	location.href="<%= ctxPath%>/search/SearchPage.neige?pdcategory_fk="+category+"&searchname="+searchname;
+	    });
+	    
+	    
+	    if(	${requestScope.pdcategory_fk != null} ) {
+	    	$("select#category").val("${requestScope.pdcategory_fk}");
+	    } 
+		
+		if( ${requestScope.searchname != null} ) {
+			$("input#keyword").val("${requestScope.searchname}");
+		} 
+		 
+		
+   }); // end of $(document).ready()------------------------
+   
+</script>
+
 
 <%-- 검색 디스플레이 --%>
 <div id="contents">
@@ -137,7 +163,7 @@
 			<div class="keyword">
 				<div class="form-group">
 					<label for="keyword">검색 키워드</label>
-					<input id="keyword" name="keyword" placeholder size="15" value="코트" type="text">	
+					<input id="keyword" name="keyword" type="text">	
 				</div>
 			</div>
 		</div>
@@ -147,8 +173,8 @@
 	</fieldset>
 	</div>
 	
-	<!-- 검색된 정보 및 상품리스트 -->
-	<div id="cateProductList">
+<!-- 검색된 정보 및 상품리스트 -->
+<div id="cateProductList">
 
 	<!-- 검색 결과 개수 -->
 	<div class="searchResult">
@@ -164,133 +190,33 @@
 		</ul>
 	</div>
 	
-	<!-- 상품리스트 보여주는 부분 -->
-	<div class="listBox">
-		<ul class="productList">
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://s3.ap-northeast-2.amazonaws.com/products-represent-img/a346f3fbb35615913e9d09c267fe52e2?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트1</a></p>
-						<ul>
-						<!-- <li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li> -->
-						<li rel="판매가"><span style="font-size:12px">230,000원</span></li>
-						<span class="label label-primary">New</span></h6>
-						</ul>
-						
-					</div>
-				</div>
-			</li>
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://static.lookpin.co.kr/20191023192005-3ec0/5152b0b224aed771ba15fa8b47746e11.jpg?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트2</a></p>
-						<ul>
-						<li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li>
-						<li rel="판매가"><span style="font-size:12px">190,000원</span></li>
-						</ul>
-						
-					</div>
-				</div>
-			</li>
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://s3.ap-northeast-2.amazonaws.com/products-represent-img/a346f3fbb35615913e9d09c267fe52e2?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트3</a></p>
-						<ul>
-						<li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li>
-						<li rel="판매가"><span style="font-size:12px">190,000원</span></li>
-						</ul>
-						
-					</div>
-				</div>
-			</li>
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://static.lookpin.co.kr/20200326154327-566a/bd68046cb72632faf3b7706c6105c9c2.jpg?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트4</a></p>
-						<ul>
-						<li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li>
-						<li rel="판매가"><span style="font-size:12px">190,000원</span></li>
-						</ul>
-						
-					</div>
-				</div>
-			</li>
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://s3.ap-northeast-2.amazonaws.com/products-represent-img/a346f3fbb35615913e9d09c267fe52e2?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트5</a></p>
-						<ul>
-						<li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li>
-						<li rel="판매가"><span style="font-size:12px">190,000원</span></li>
-						</ul>
-						
-					</div>
-				</div>
-			</li>
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://static.lookpin.co.kr/20191023192005-3ec0/5152b0b224aed771ba15fa8b47746e11.jpg?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트6</a></p>
-						<ul>
-						<li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li>
-						<li rel="판매가"><span style="font-size:12px">190,000원</span></li>
-						</ul>
-						
-					</div>
-				</div>
-			</li>
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://s3.ap-northeast-2.amazonaws.com/products-represent-img/a346f3fbb35615913e9d09c267fe52e2?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트7</a></p>
-						<ul>
-						<li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li>
-						<li rel="판매가"><span style="font-size:12px">190,000원</span></li>
-						</ul>
-						
-					</div>
-				</div>
-			</li>
-			<li id="box">
-				<div class="col-md-3">
-					<div class="productImg">
-						<img src="https://static.lookpin.co.kr/20200326154327-566a/bd68046cb72632faf3b7706c6105c9c2.jpg?resize=360" />
-					</div>
-					<div class="discription">
-						<p class="name"><a>코트8</a></p>
-						<ul>
-						<li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">238,000원</span></li>
-						<li rel="판매가"><span style="font-size:12px">190,000원</span></li>
-						</ul>
-					</div>
-				</div>
-			</li>
-		</ul>
-		<button class="btn" id="showMore">더보기</button>
+	<%-- 상품리스트 보여주는 부분 --%>
+	<div id="resultDisplay">
+	
+		<ul class="productList"> 
+			     <c:forEach var="pvo" items="${searchProductList}" varStatus="status" >
+			      <li id="box">
+			         <div class = "col-md-3">
+			            <div class = "productImg">
+			            	<span>${pvo.pdimage1}</span>
+			                <img src ="<%= ctxPath %>/images/${pvo.pdimage1}" /> 
+			            </div>
+			            <div class = "discription">
+			               <p class = "name">${pvo.pdname}</p> 
+			               <ul>
+			               	  <li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">정상가: ${pvo.price}</span></li>
+			                  <li rel="판매가"><span style="font-size:12px">판매가: ${pvo.saleprice}</span></li>
+			               </ul>
+			            </div>
+			         </div>
+			      </li>
+			     </c:forEach>
+	   </ul>
+	
 	</div>
-	</div>
+	
+	<button class="btn" id="showMore">더보기</button>
+</div>
 </div>
 
 <jsp:include page="../footer.jsp" />
