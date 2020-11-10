@@ -16,26 +16,34 @@ public class ProductVO {
    private String texture;         // 제품 소재
    private String pdgender;      // 성별
    
+   private String colores; 
+// private ProductInfoVO pinfo;   // pinfo 는 tbl_product_info 테이블의 색상과 사이즈를 Product의 tbl_product 테이블의 조인해 왔을때 데이터 담는다. 
+
+
    public ProductVO(){ }         // 기본 생성자
 
+
    public ProductVO(int pdno, String pdname, String pdcategory_fk, String pdimage1, String pdimage2, int pdqty,
-         int price, int saleprice, String pdcontent, int point, String pdinputdate, String texture,
-         String pdgender) {
-	      super();
-	      this.pdno = pdno;
-	      this.pdname = pdname;
-	      this.pdcategory_fk = pdcategory_fk;
-	      this.pdimage1 = pdimage1;
-	      this.pdimage2 = pdimage2;
-	      this.pdqty = pdqty;
-	      this.price = price;
-	      this.saleprice = saleprice;
-	      this.pdcontent = pdcontent;
-	      this.point = point;
-	      this.pdinputdate = pdinputdate;
-	      this.texture = texture;
-	      this.pdgender = pdgender;
+         int price, int saleprice, String pdcontent, int point, String pdinputdate, String texture, String pdgender, String colores
+         /*, ProductInfoVO pinfo*/ ) {
+      super();
+      this.pdno = pdno;
+      this.pdname = pdname;
+      this.pdcategory_fk = pdcategory_fk;
+      this.pdimage1 = pdimage1;
+      this.pdimage2 = pdimage2;
+      this.pdqty = pdqty;
+      this.price = price;
+      this.saleprice = saleprice;
+      this.pdcontent = pdcontent;
+      this.point = point;
+      this.pdinputdate = pdinputdate;
+      this.texture = texture;
+      this.pdgender = pdgender;
+      this.colores = colores;
+   // this.pinfo = pinfo;
    }
+
 
    public int getPdno() {
       return pdno;
@@ -139,6 +147,28 @@ public class ProductVO {
 
    public void setPdgender(String pdgender) {
       this.pdgender = pdgender;
-   };      
+   }
 
+
+	public String getColores() {
+		return colores;
+	}
+	
+	
+	public void setColores(String colores) {
+		this.colores = colores;
+	}
+  
+   
+   
+  /* 
+   public ProductInfoVO getPinfo() {
+      return pinfo;
+   }
+
+   public void setPinfo(ProductInfoVO pinfo) {
+      this.pinfo = pinfo;
+   }
+  */
+  
 }

@@ -15,7 +15,6 @@
 		visibility:hidden;
 	}
 	div#contents{
-		width: 95%;
 		text-decoration: gray;
 	}
 	div.titleArea{
@@ -70,10 +69,14 @@
 		color: white; 
 	}
 	
+	div.container{
+		width: 1380px;	
+	}
 	ul.orderBy{
 		font-size: 10pt;
 		text-align: right;
 		padding: 10px;
+		margin: 30px 60px;
 	}
 	ul.orderBy>li{
 		padding: 0 10px 0 0 ;
@@ -115,7 +118,7 @@
 <script type="text/javascript">
 
    $(document).ready(function(){
-	   
+	    
 	    $("button#search").click(function(){
 	    	
 	    	var category = $("select#category").val();
@@ -132,7 +135,10 @@
 		if( ${requestScope.searchname != null} ) {
 			$("input#keyword").val("${requestScope.searchname}");
 		} 
-		 
+		
+		if ( ${requestScope.searchCount != null} ) {
+			$("span#searchno").html("${requestScope.searchCount}");
+		}
 		
    }); // end of $(document).ready()------------------------
    
@@ -175,10 +181,10 @@
 	
 <!-- 검색된 정보 및 상품리스트 -->
 <div id="cateProductList">
-
+	
 	<!-- 검색 결과 개수 -->
-	<div class="searchResult">
-		<p class="record">총 <strong>8</strong>개의 상품이 검색되었습니다.</p>
+	<div class="searchResult" >
+		<p class="record">총 <span id="searchno"></span>개의 상품이 검색되었습니다.</p>
 	</div>
 	
 	<!-- 정렬 순서 -->
@@ -191,18 +197,18 @@
 	</div>
 	
 	<%-- 상품리스트 보여주는 부분 --%>
-	<div id="resultDisplay">
+	<div class="container">
 	
 		<ul class="productList"> 
 			     <c:forEach var="pvo" items="${searchProductList}" varStatus="status" >
 			      <li id="box">
 			         <div class = "col-md-3">
 			            <div class = "productImg">
-			            	<span>${pvo.pdimage1}</span>
 			                <img src ="<%= ctxPath %>/images/${pvo.pdimage1}" /> 
 			            </div>
 			            <div class = "discription">
-			               <p class = "name">${pvo.pdname}</p> 
+			            	<!--  searchProductInfoList 넣기(컬러) ---------------(수정필요)----------------- -->
+				            <span>${pvo.colores}</span>
 			               <ul>
 			               	  <li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">정상가: ${pvo.price}</span></li>
 			                  <li rel="판매가"><span style="font-size:12px">판매가: ${pvo.saleprice}</span></li>

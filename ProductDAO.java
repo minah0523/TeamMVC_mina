@@ -1,7 +1,5 @@
 package myshop.model;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 import java.sql.*;
 import java.util.*;
 
@@ -10,7 +8,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.json.JSONObject;
 
 
 public class ProductDAO implements InterProductDAO {
@@ -19,7 +16,6 @@ public class ProductDAO implements InterProductDAO {
 	private Connection conn;
 	private PreparedStatement pstmt;
 	private ResultSet rs;
-	
 	
 	// 생성자
 	public ProductDAO() {
@@ -76,23 +72,37 @@ public class ProductDAO implements InterProductDAO {
 		return imgList;
 	}
 	
-	//search 페이지에 보여지는 상품이미지파일명을 모두 조회(select)하는 메소드 (MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA=MINA)
+	//search 페이지에 보여지는 상품이미지파일명을 모두 조회(select)하는 메소드 (MINA)
 	@Override
 	public List<ProductVO> searchProduct(Map<String, String> paraMap) throws SQLException {
 		
 		List<ProductVO> searchProductList = new ArrayList<>();
+
 		
 		try {
 			 conn = ds.getConnection();
 			 
-			 String sql = " select pdno, pdname, pdcategory_fk, pdimage1, pdimage2, price, saleprice, pdinputdate, pdgender "+
-					 	  " from tbl_product ";
+			 String sql = " select pdno, pdname, pdcategory_fk, pdimage1, pdimage2, price, saleprice, pdinputdate, pdgender ";
 			 
-			 if(paraMap.get("searchname") == null ) {
-				 sql += " where pdcategory_fk = ? ";
+			 if(paraMap.get("searchname") == null ) { //searchname(키워드)에 아무것도 입력하지 않았다면,
+				 
+				 if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+					 sql += " from tbl_product ";
+				 }
+				 else { //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+					 sql += " from tbl_product "
+					 	  + " where pdcategory_fk = ? ";
+				 }
 			 }
-			 else {
-				 sql += " where pdcategory_fk = ? and pdname like '%'|| ? ||'%' ";
+			 else { //searchname(키워드)에 입력이 되었다면,
+				 if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+					 sql += " from tbl_product "
+						  + " where pdname like '%'|| ? ||'%' ";
+				 }
+				 else {	//pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+					 sql += " from tbl_product "
+						 + " where pdcategory_fk = ? and pdname like '%'|| ? ||'%' ";	
+				 }
 			 }
 				
 			 sql += " order by saleprice ";
@@ -100,12 +110,22 @@ public class ProductDAO implements InterProductDAO {
 			 
 			 pstmt = conn.prepareStatement(sql);
 			 
-			 if(paraMap.get("searchname") == null ) {
-				 pstmt.setString(1, paraMap.get("pdcategory_fk"));
-			 }
-			 else {
-				 pstmt.setString(1, paraMap.get("pdcategory_fk"));
-				 pstmt.setString(2, paraMap.get("searchname"));
+			 if(paraMap.get("searchname") == null ) { //searchname(키워드)에 아무것도 입력하지 않았다면,
+				 
+				 if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+				 }
+				 else { //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+					 pstmt.setString(1, paraMap.get("pdcategory_fk"));
+				 }
+			 }	 
+			 else { //searchname(키워드)에 입력이 되었다면,
+				 if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+					 pstmt.setString(1, paraMap.get("searchname"));
+				 }
+				 else {	//pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+					 pstmt.setString(1, paraMap.get("pdcategory_fk"));
+					 pstmt.setString(2, paraMap.get("searchname"));
+				 }
 			 }
 			 
 			 rs = pstmt.executeQuery();
@@ -125,6 +145,7 @@ public class ProductDAO implements InterProductDAO {
 				 pvo.setPdgender(rs.getString(9));
 				 
 				 searchProductList.add(pvo);
+				 
 			 }// end of while-------------------------
 			 
 		} finally {
@@ -134,6 +155,37 @@ public class ProductDAO implements InterProductDAO {
 		return searchProductList;
 	}
 
+	
+	// search페이지에 보여지는 상품이미지에 대한 색상을 모두 조회(select)하는 메소드 (MINA)
+	@Override
+	public List<String> selectProductColor(String pdno) throws SQLException {
+
+		List<String> prodInfoList = new ArrayList<>();
+		
+		try {
+			 conn = ds.getConnection();
+			 
+			 String sql = "select distinct pcolor "+
+					      "from tbl_product_info  "+
+					      "where pdno_fk = ? "; 
+			  
+			 pstmt = conn.prepareStatement(sql);
+			 pstmt.setString(1, pdno);
+			 
+			 rs = pstmt.executeQuery();
+			 
+			 while(rs.next()) {
+				 prodInfoList.add( rs.getString(1) );
+			 }// end of while-------------------------
+			 
+		} finally {
+			close();
+		}
+		
+		return prodInfoList;
+	}
+	
+	
 
 }
 
