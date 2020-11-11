@@ -15,7 +15,7 @@
 		visibility:hidden;
 	}
 	div#contents{
-		text-decoration: gray;
+		color: gray;
 	}
 	div.titleArea{
 		margin: 50px 0 50px;
@@ -71,6 +71,7 @@
 	
 	div.container{
 		width: 1380px;	
+		font-size: 11pt;
 	}
 	ul.orderBy{
 		font-size: 10pt;
@@ -89,6 +90,8 @@
 	}
 	ul.productList>li#box{
 	    display: block;
+	    font-size:13px;
+	    line-height: 150%;
 	}
 	div.col-md-3{
 	    margin: 0 0 50px;
@@ -106,8 +109,18 @@
 	    text-align: center;
 	    overflow: hidden;
 	}	
+	div.pname{
+		font-weight: bolder;
+	}
+	.dot {
+	  height: 10px;
+	  width: 10px;
+	  border: 1px solid #DCDCDC;
+	  border-radius: 50%;
+	  display: inline-block;
+	}
 	button#showMore{
-		background-color: light-gray;
+		background-color: #F5F5F5;
 		color: gray; 
 		margin: 0 auto;
 	}
@@ -207,13 +220,28 @@
 			                <img src ="<%= ctxPath %>/images/${pvo.pdimage1}" /> 
 			            </div>
 			            <div class = "discription">
-			            	<!--  searchProductInfoList 넣기(컬러) ---------------(수정필요)----------------- -->
-				            <span>${pvo.colores}</span>
-			               <ul>
-			               	  <li rel="정상가"><span style="font-size:11px; text-decoration:line-through;">정상가: ${pvo.price}</span></li>
-			                  <li rel="판매가"><span style="font-size:12px">판매가: ${pvo.saleprice}</span></li>
-			               </ul>
-			            </div>
+							<%-- 제품이름 --%>
+							<div id="pname" style="color:#333; font-weight:bold ; line-height: 170%">
+								 ${pvo.pdname}     	
+							</div>
+							<%-- 컬러와 사이즈를 보여주는 부분 --%>
+				            <div id="colorList">
+								<%-- 컬러 리스트 넣는 부분 (반복문) --%>
+								<c:forTokens var="item" items="${pvo.colores}" delims=",">
+								    <span>${item}</span>
+								    <span class="dot" style="background-color:${item}"></span>
+								</c:forTokens>
+							</div>
+							<div>
+								<%-- 사이즈 리스트 넣는 부분 (반복문) --%>
+								사이즈 구성 : 
+								<c:forTokens var="item" items="${pvo.sizes}" delims=",">
+								    ${item}
+								</c:forTokens>
+							</div>
+								<c:if test="${pvo.price ne pvo.saleprice}"> <span style="font-size:11px; text-decoration:line-through;">정상가: ${pvo.price}원 </span></c:if>
+			               		<span> &nbsp&nbsp판매가: ${pvo.saleprice}원</span>
+			            	</div>
 			         </div>
 			      </li>
 			     </c:forEach>

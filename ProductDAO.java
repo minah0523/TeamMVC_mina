@@ -184,8 +184,37 @@ public class ProductDAO implements InterProductDAO {
 		
 		return prodInfoList;
 	}
-	
-	
+
+
+	// search페이지에 보여지는 상품이미지에 대한 사이즈를 모두 조회(select)하는 메소드 (MINA)
+		@Override
+		public List<String> selectProductSize(String pdno) throws SQLException {
+
+			List<String> prodInfoList = new ArrayList<>();
+			
+			try {
+				 conn = ds.getConnection();
+				 
+				 String sql = " select distinct psize "+
+							  " from tbl_product_info  "+
+							  " where pdno_fk = ? "+
+							  " order by psize desc "; 
+				  
+				 pstmt = conn.prepareStatement(sql);
+				 pstmt.setString(1, pdno);
+				 
+				 rs = pstmt.executeQuery();
+				 
+				 while(rs.next()) {
+					 prodInfoList.add( rs.getString(1) );
+				 }// end of while-------------------------
+				 
+			} finally {
+				close();
+			}
+			
+			return prodInfoList;
+		}
 
 }
 

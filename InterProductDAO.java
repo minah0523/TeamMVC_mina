@@ -14,7 +14,9 @@ public interface InterProductDAO {
 	List<ProductVO> searchProduct(Map<String, String> paraMap) throws SQLException; 
 	
 	// search페이지에 보여지는 상품이미지에 대한 색상을 모두 조회(select)하는 메소드 (MINA)
-	List<String> selectProductColor(String pdno) throws SQLException; 
+	List<String> selectProductColor(String pdno) throws SQLException;
+
+	List<String> selectProductSize(String pdno) throws SQLException; 
 
 	
 }

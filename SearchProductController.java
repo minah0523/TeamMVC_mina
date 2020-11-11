@@ -40,9 +40,29 @@ public class SearchProductController extends AbstractController {
 			pvo.setColores(colores);
 		}
 		
+		
+		for(ProductVO pvo : searchProductList) {
+			
+			List<String> sizeList = pdao.selectProductSize(String.valueOf(pvo.getPdno())); 
+			
+			String sizes = "";
+			for(int i=0; i<sizeList.size(); i++) {
+				String comma = (i < sizeList.size()-1)?",":"";
+				sizes += sizeList.get(i)+comma;
+			}
+			
+			pvo.setSizes(sizes);
+		}
+		
+		
 		for(ProductVO pvo : searchProductList) {
 			System.out.println(pvo.getPdname()+" => "+pvo.getColores());	
 		}
+		
+		for(ProductVO pvo : searchProductList) {
+			System.out.println(pvo.getPdname()+" => "+pvo.getSizes());	
+		}
+		
 		
 		request.setAttribute("searchProductList", searchProductList); 
 		request.setAttribute("searchCount", searchProductList.size());

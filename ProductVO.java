@@ -17,6 +17,8 @@ public class ProductVO {
    private String pdgender;      // 성별
    
    private String colores; 
+   private String sizes; 
+   
 // private ProductInfoVO pinfo;   // pinfo 는 tbl_product_info 테이블의 색상과 사이즈를 Product의 tbl_product 테이블의 조인해 왔을때 데이터 담는다. 
 
 
@@ -24,7 +26,7 @@ public class ProductVO {
 
 
    public ProductVO(int pdno, String pdname, String pdcategory_fk, String pdimage1, String pdimage2, int pdqty,
-         int price, int saleprice, String pdcontent, int point, String pdinputdate, String texture, String pdgender, String colores
+         int price, int saleprice, String pdcontent, int point, String pdinputdate, String texture, String pdgender, String colores, String sizes
          /*, ProductInfoVO pinfo*/ ) {
       super();
       this.pdno = pdno;
@@ -41,6 +43,7 @@ public class ProductVO {
       this.texture = texture;
       this.pdgender = pdgender;
       this.colores = colores;
+      this.sizes = sizes;
    // this.pinfo = pinfo;
    }
 
@@ -157,6 +160,16 @@ public class ProductVO {
 	
 	public void setColores(String colores) {
 		this.colores = colores;
+	}
+
+
+	public String getSizes() {
+		return sizes;
+	}
+
+
+	public void setSizes(String sizes) {
+		this.sizes = sizes;
 	}
   
    
