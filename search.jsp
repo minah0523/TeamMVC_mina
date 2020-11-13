@@ -40,7 +40,20 @@
     	margin: 0 auto;
     	padding: 0 47px;
 	}
-	label{
+	div.genderRadio > div{
+		display: inline;
+		margin: 30px 0;
+	}
+	div.genderRadio > span {
+		font-weight: bold; 
+		text-align: left;
+	}
+	div.genderRadio  > div > label{
+		text-align: left;		
+		margin: 10px;
+		font-weight: normal;
+	}
+	div.item > label{
 		float: left;
   		clear: left;
     	padding: 5px 10px 0 0;
@@ -68,7 +81,6 @@
 		margin: 10px 0;
 		color: white; 
 	}
-	
 	div.container{
 		width: 1380px;	
 		font-size: 11pt;
@@ -83,7 +95,6 @@
 		padding: 0 10px 0 0 ;
 		display: inline;
 	}
-	
 	ul{
 		padding-inline-start: 0px;
     	list-style-type: none;
@@ -94,7 +105,7 @@
 	    line-height: 150%;
 	}
 	div.col-md-3{
-	    margin: 0 0 50px;
+	    margin: 0 0 50px 0;
 	}
 	div.item{
 		margin: 8px 0 0;
@@ -113,8 +124,8 @@
 		font-weight: bolder;
 	}
 	.dot {
-	  height: 10px;
-	  width: 10px;
+	  height: 12px;
+	  width: 12px;
 	  border: 1px solid #DCDCDC;
 	  border-radius: 50%;
 	  display: inline-block;
@@ -124,22 +135,39 @@
 		color: gray; 
 		margin: 0 auto;
 	}
-	
 
+	/* Fading animation */
+	.fade {
+	  -webkit-animation-name: fade;
+	  -webkit-animation-duration: 2s;
+	  animation-delay: 0;
+	  animation-iteration-count: infinite;
+	}
+	
+	@-webkit-keyframes fade {
+	  from {opacity: 0.8} 
+	  to {opacity: 2}
+	}
+	
 </style>
 
 <script type="text/javascript">
 
    $(document).ready(function(){
 	    
+	   /* 검색 버튼을 누른경우 */
 	    $("button#search").click(function(){
-	    	
+	    	var gender = $("input[name='gender']:checked").val();
 	    	var category = $("select#category").val();
 	    	var searchname = $("input#keyword").val();
-	    	
-	     	location.href="<%= ctxPath%>/search/SearchPage.neige?pdcategory_fk="+category+"&searchname="+searchname;
+
+	    	location.href="<%= ctxPath%>/search/SearchPage.neige?pdgender="+gender+"&pdcategory_fk="+category+"&searchname="+searchname;
 	    });
 	    
+	   // 눌렀던 항목들 그대로 유지시키기
+		if( ${requestScope.pdgender != null || requestScope.pdgender != "0"} ){
+	    	$("input:radio[name='gender']:radio[value='${requestScope.pdgender}']").prop('checked', true);
+	    }
 	    
 	    if(	${requestScope.pdcategory_fk != null} ) {
 	    	$("select#category").val("${requestScope.pdcategory_fk}");
@@ -153,6 +181,42 @@
 			$("span#searchno").html("${requestScope.searchCount}");
 		}
 		
+		
+	   /* 정렬 버튼중 하나를 누른경우 */
+	   $("li.sort").click(function(){
+	    	var gender = $("input[name='gender']:checked").val();
+	    	var category = $("select#category").val();
+	    	var searchname = $("input#keyword").val();
+	    	// 클릭된 것이 무엇인지 알아오는 변수
+	    	var sort = $(this).attr("value");
+		    location.href="<%= ctxPath%>/search/SearchPage.neige?pdgender="+gender+"&pdcategory_fk="+category+"&searchname="+searchname+"&sort="+sort;         
+	    });
+	   
+	   
+	   // 정렬 클릭한 것 bold처리하기 -------------- 수정필요
+	   if( ${requestScope.sort != null} ) {
+		   $("li.sort").val("${requestScope.sort}"); 
+	   }
+	 
+	   // 이미지 전환 
+	   var slideIndex = 0;
+
+	   showSlides();
+	   
+	   function showSlides() {
+		  
+		   var i;
+		   var slides = document.getElementsByClassName("productImg");
+			
+		   for (i = 0; i < slides.length; i++) {
+			   slides[i].style.display = "none";  
+		   }
+		   slideIndex++;
+			
+		   slides[slideIndex-1].style.display = "block";  
+		   setTimeout(showSlides, 2000); // Change image every 2 seconds
+		}
+
    }); // end of $(document).ready()------------------------
    
 </script>
@@ -163,6 +227,12 @@
 	<div class="titleArea">SEARCH ITEMS</div>
 	<div class="searchBox">
 	<fieldset>
+		<div class="genderRadio">
+			<span id="gender">성별</span>
+			<div id="all" ><label for="0">전체</label><input name="gender" type="radio" id="0" value="0" checked="checked"></div>
+			<div id="women"><label for="2">여성</label><input name="gender" type="radio" id="2" value="2"></div>
+			<div id="men"><label for="1">남성</label><input name="gender" type="radio" id="1" value="1"></div>
+		</div>
 		<div class="item">
 			<div class="category">
 				<div class="form-group">
@@ -192,20 +262,29 @@
 	</fieldset>
 	</div>
 	
-<!-- 검색된 정보 및 상품리스트 -->
+<%-- 검색된 정보 및 상품리스트 --%>
 <div id="cateProductList">
 	
-	<!-- 검색 결과 개수 -->
+	<%-- 검색 결과 개수 --%>
 	<div class="searchResult" >
-		<p class="record">총 <span id="searchno"></span>개의 상품이 검색되었습니다.</p>
+		<p class="record">총 <span id="searchno" style="font-weight: bold;"></span>개의 상품이 검색되었습니다.</p>
 	</div>
 	
-	<!-- 정렬 순서 -->
+	<%-- 정렬 순서 --%>
 	<div class="orderBy">
 		<ul class="orderBy">
-			<li><a>신상품순</a></li>
-			<li><a>인기상품순</a></li>
-			<li><a>낮은가격순</a></li>
+			<li class="sort" value="sortNewProduct" id="sortNewProduct">
+				<a href="javascript:void(0);"> 신상품순 </a> <span class="delimiter">&#124;</span> 
+			</li>
+			<li class="sort" value="sortLowPrice" id="sortLowPrice">
+				<a href="javascript:void(0);"> 낮은가격순 </a> <span class="delimiter">&#124;</span> 
+			</li>
+			<li class="sort" value="sortHighPrice" id="sortHighPrice">
+				<a href="javascript:void(0);"> 높은가격순 </a> <span class="delimiter">&#124;</span> 
+			</li>
+			<li class="sort" value="sortBestProduct" id="sortBestProduct">
+				<a href="javascript:void(0);"> 인기상품순 </a> 
+			</li>
 		</ul>
 	</div>
 	
@@ -216,31 +295,40 @@
 			     <c:forEach var="pvo" items="${searchProductList}" varStatus="status" >
 			      <li id="box">
 			         <div class = "col-md-3">
-			            <div class = "productImg">
-			                <img src ="<%= ctxPath %>/images/${pvo.pdimage1}" /> 
-			            </div>
+			        	 
+			        	 <%-- 이미지 슬라이드  --%>
+			            <div class="slideshow-container">
+								<div class="productImg fade">
+								  <img src="<%= ctxPath%>/images/${pvo.pdimage1}">
+								</div>
+								<div class="productImg fade">
+								  <img src="<%= ctxPath%>/images/${pvo.pdimage2}" >
+								</div>
+						</div>
+						
+						
 			            <div class = "discription">
 							<%-- 제품이름 --%>
-							<div id="pname" style="color:#333; font-weight:bold ; line-height: 170%">
+							<div id="pname" style="color:#333; font-size:11.5pt; font-weight:bold ; line-height:170%">
 								 ${pvo.pdname}     	
 							</div>
-							<%-- 컬러와 사이즈를 보여주는 부분 --%>
-				            <div id="colorList">
+							<div>
 								<%-- 컬러 리스트 넣는 부분 (반복문) --%>
+								<span style="font-weight: bold;">COLOR : </span> 
 								<c:forTokens var="item" items="${pvo.colores}" delims=",">
-								    <span>${item}</span>
+								    <span><%-- ${item} --%></span>
 								    <span class="dot" style="background-color:${item}"></span>
 								</c:forTokens>
-							</div>
-							<div>
 								<%-- 사이즈 리스트 넣는 부분 (반복문) --%>
-								사이즈 구성 : 
+								<%-- 사이즈 구성 :  --%>
+								<span style="font-weight: bold;"> &nbsp;&nbsp;SIZE : </span> 
 								<c:forTokens var="item" items="${pvo.sizes}" delims=",">
 								    ${item}
 								</c:forTokens>
 							</div>
-								<c:if test="${pvo.price ne pvo.saleprice}"> <span style="font-size:11px; text-decoration:line-through;">정상가: ${pvo.price}원 </span></c:if>
-			               		<span> &nbsp&nbsp판매가: ${pvo.saleprice}원</span>
+			               		<span style="font-weight: bold;">판매가 :  </span><c:if test="${pvo.price ne pvo.saleprice}"><span style="font-size:11px; text-decoration:line-through;">${pvo.price} </span></c:if><span>&nbsp;&nbsp;${pvo.saleprice}원</span>
+			               		<c:if test="${pvo.price ne pvo.saleprice}"><span class="badge badge-pill badge-warning" style="font-size: 8pt; background-color:lightcoral">SALE</span></c:if>
+			               		<c:if test="${pvo.price eq pvo.saleprice}"><span class="badge badge-pill badge-warning" style="font-size: 8pt; background-color:lightblue">NEW</span></c:if>
 			            	</div>
 			         </div>
 			      </li>
