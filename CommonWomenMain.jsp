@@ -77,14 +77,6 @@
    
      width : 1380px;
    }
-   
-   .dot {
-     height: 10px;
-     width: 10px;
-     border: 1px solid #DCDCDC;
-     border-radius: 50%;
-     display: inline-block;
-   }   
    	
 </style>
 
@@ -131,33 +123,38 @@
 	        }, 400);
 	        return false;
 	    });
-	    	
 	});
+	
 	
 	// 높은가격 클릭 시 이벤트
 	function highPriceClick() {
 		
 		$("li#sortHighPrice").click(function(){
-			
 			var sort = $(this).attr('value');
 			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;
+			// alert("${sessionScope.gender}");
 			
-			// var offset = $("#ItemLists").offset();
-			// alert("offset아 나와라" + offset.top);
-			// $('html').animate({scrollTop: offset.top}, 500);
+			// 세션 스토리지 불러오기
+			// var gender = sessionStorage.getItem("gender");
+			// alert("gender의 세션 스토리지 불러오기 ==> " + gender);
+			
+			var gender = ${sessionScope.gender};
+			var pdcategory_fk = ${sessionScope.pdcategory_fk};
+			
+			location.href="<%= ctxPath%>/category/categorySelectList.neige?pdcategory_fk="+pdcategory_fk+"&sort="+sort+"&gender="+gender;
 		});
-		
 	}
 	
 	// 낮은가격 클릭 시 이벤트
 	function lowPriceClick() {
 		
 		$("li#sortLowPrice").click(function(){
-			
 			var sort = $(this).attr('value');
 			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;
+			var gender = ${sessionScope.gender};
+			var pdcategory_fk = ${sessionScope.pdcategory_fk};
+			
+			location.href="<%= ctxPath%>/category/categorySelectList.neige?pdcategory_fk="+pdcategory_fk+"&sort="+sort+"&gender="+gender;
 		});		
 	}
 	
@@ -165,14 +162,14 @@
 	function newProductClick() {
 		
 		$("li#sortNewProduct").click(function(){
-			
 			var sort = $(this).attr('value');
 			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;			
+			var gender = ${sessionScope.gender};
+			var pdcategory_fk = ${sessionScope.pdcategory_fk};
 			
+			location.href="<%= ctxPath%>/category/categorySelectList.neige?pdcategory_fk="+pdcategory_fk+"&sort="+sort+"&gender="+gender;
 		});
-		
-	}
+	}	
 
 </script>
 
@@ -221,9 +218,9 @@
     </a>
   </div>
 </div>
+<%-- Carousel 예제 끝 --%>
 
 <div id = "My_Title">
-	<%-- <span>${sessionScope.gender}</span> --%>
 	OUTER
 </div>
 
@@ -247,8 +244,28 @@
 <br>
 
 <%-- 정렬 : 판매순, 가격순, 신상품  --%>
-
+<%-- 
 <div id = "Order">
+	<div class="col-md-3" id="OrderList" style="margin-left: 1100px;">
+		<ul>
+			<li>
+				<a href = "<%= ctxPath %>/product/newProductList.neige"> 신상품 </a> <span class="delimiter">&#124;</span>			
+			</li>
+			<li>
+				<a href = "<%= ctxPath %>/product/lowPricewProductList.neige"> 낮은가격 </a> <span class="delimiter">&#124;</span>		
+			</li>
+			<li>
+				<a href = "<%= ctxPath %>/product/highPriceProductList.neige"> 높은가격 </a> <span class="delimiter">&#124;</span>		
+			</li>			
+			<li>
+				<a href = "<%= ctxPath %>/product/productBestList.neige"> 인기상품 </a>					
+			</li>						
+		</ul>
+	</div>	
+</div>
+ --%>
+ 
+ <div id = "Order">
 	<div class="col-md-3" id="OrderList" style="margin-left: 1100px;">
 		<ul>
 			<li value= "sortNewProduct" id = "sortNewProduct">
@@ -266,45 +283,8 @@
 		</ul>
 	</div>	
 </div>
-
+ 
 <br><br>
-
-<%-- 아이템 리스트 --%>
-<div  id = "ItemLists" >
-<div class = "container">
-	<ul> 
-	  <c:forEach var="productMainImageVo" items="${productMainImageList}" varStatus="status" >
-		<li>
-			<div class = "col-md-3" style="margin-bottom: 50px;" >
-				<div class = "productImg">
-					<img src = "<%= ctxPath %>/images2/${productMainImageVo.pdimage1}" /> 
-				</div>
-				<div class = "discription">
-					<ul>
-						<%-- 제품이름 --%>
-						<li><span class = "pName" style="font-weight: bold; font: ">${productMainImageVo.pdname}</span></li>
-						<li>
-						<c:if test="${productMainImageVo.price != productMainImageVo.saleprice }"> 
-								<span style = "text-decoration: line-through;">정상가 : ${productMainImageVo.price}원</span>
-						</c:if> <%-- 정상가와 세일가가 같지 않으면 정상가만 출력하고 같으면 판매가만 출력 --%>
-								<span>&nbsp;&nbsp;판매가 : ${productMainImageVo.saleprice}원</span>
-						</li>
-						<%-- 컬러 리스트 넣는 부분 (반복문) --%>
-						<c:forTokens var="item" items="${productMainImageVo.colores}" delims=",">
-                            <span>${item}</span>
-                            <span class="dot" style="background-color:${item}"></span>
-						</c:forTokens>
-						<%-- <li style = "display: inline-block;"><span>${productMainImageVo.colores}</span></li> --%>
-						<li>
-							<span>상품번호${productMainImageVo.pdno}</span>
-						</li>
-					</ul>
-				</div>
-		</li>
-	   </c:forEach>
-	</ul>
-</div>
-</div>
  
 <%-- TOP & DOWN 버튼 --%>
 
@@ -325,4 +305,3 @@
 
 <%-- div contents --%>
 
-<jsp:include page="footer.jsp" />

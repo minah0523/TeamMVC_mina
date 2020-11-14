@@ -32,7 +32,7 @@
 		margin-left: 15px;
 		width: 100px;
 		height: 30px;
-		background-color: #C1AA92;
+		background-color: #a0a0a0;
 		padding-top: 5px;	
 	}
 	
@@ -71,7 +71,8 @@
 
    div.discription > ul > li > span {
    	  font-size: 10pt;
-   } 
+   }    
+   
    
    div#ItemLists > div.container {
    
@@ -84,12 +85,12 @@
      border: 1px solid #DCDCDC;
      border-radius: 50%;
      display: inline-block;
-   }   
+   }      
+   	    
    	
 </style>
 
-<jsp:include page="header.jsp" />
-
+<jsp:include page="headerMan.jsp" />
 
 <script type="text/javascript">
 
@@ -124,71 +125,64 @@
 	        }, 400);
 	        return false;
 	    });
-	    
-	    $("#goDownBtn").click(function() { // 보인 버튼 클릭시 
-	        $('html, body').animate({ // html태그나, body 태그 위치로 세로스크롤을 0으로 지정하며 0.4초  동안 이동한다.
-	            scrollTop : document.body.scrollHeight // 스크롤 하지 않았을 때의 전체 높이를 구한다 
-	        }, 400);
-	        return false;
-	    });
-	    	
+		
 	});
+	
 	
 	// 높은가격 클릭 시 이벤트
 	function highPriceClick() {
 		
 		$("li#sortHighPrice").click(function(){
-			
 			var sort = $(this).attr('value');
 			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;
+			// alert("${sessionScope.gender}");
 			
-			// var offset = $("#ItemLists").offset();
-			// alert("offset아 나와라" + offset.top);
-			// $('html').animate({scrollTop: offset.top}, 500);
+			// 세션 스토리지 불러오기
+			// var gender = sessionStorage.getItem("gender");
+			// alert("gender의 세션 스토리지 불러오기 ==> " + gender);
+			
+			var gender = ${sessionScope.gender};
+			
+			location.href="<%= ctxPath%>/ManMain.neige?sort="+sort+"&gender="+gender;
 		});
-		
 	}
 	
 	// 낮은가격 클릭 시 이벤트
 	function lowPriceClick() {
 		
 		$("li#sortLowPrice").click(function(){
-			
 			var sort = $(this).attr('value');
 			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;
+			var gender = ${sessionScope.gender};
+			
+			location.href="<%= ctxPath%>/ManMain.neige?sort="+sort+"&gender="+gender;
 		});		
 	}
 	
-	// 신상품 클릭 시 이벤트
 	function newProductClick() {
 		
 		$("li#sortNewProduct").click(function(){
-			
 			var sort = $(this).attr('value');
 			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;			
+			var gender = ${sessionScope.gender};
 			
+			location.href="<%= ctxPath%>/ManMain.neige?sort="+sort+"&gender="+gender;			
 		});
-		
 	}
 
+
 </script>
-
-
-<br><br>
 
 <!-- == Carousel 예제 == -->
 <div class="container" align="center"> 
   <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
     <ol class="carousel-indicators">
-      <c:forEach items="${imageCarouselList}" varStatus="status" begin="0" end="4" >
-        <c:if test="${status.index == 0 && status.index < 5 }">
+      <c:forEach items="${imageCarouselList}" varStatus="status">
+        <c:if test="${status.index == 5 }">
 	      <li data-target="#myCarousel" data-slide-to="${status.index}" class="active"></li>        	
         </c:if>
-        <c:if test="${status.index > 0}">
+        <c:if test="${status.index > 5}">
 	      <li data-target="#myCarousel" data-slide-to="${status.index}"></li>        
         </c:if>
       </c:forEach>
@@ -196,14 +190,18 @@
 
     <!-- Wrapper for slides -->
     <div class="carousel-inner">
-      <c:forEach var = "imgvo" items="${imageCarouselList}" varStatus="status" begin="0" end="4" >
-        <c:if test="${status.index == 0}">
+      <c:forEach var = "imgvo" items="${imageCarouselList}" varStatus="status">
+        <c:if test="${status.index == 5}">
         	<div class="item active">
-        		<img src="<%= ctxPath %>/images/carousel/${imgvo.imgfilename}" style="width:100%;">
+<%--         		<span>${status.index}</span>
+        		<span>${imgvo.imgno}</span> --%>
+        		<img src="<%= ctxPath %>/images/carousel/${imgvo.imgfilename}" style="width:100%; height: 80%">
         	</div>
         </c:if> 
-        <c:if test="${status.index > 0 && status.index < 5}">
+        <c:if test="${status.index > 5}">
         	<div class="item">
+<%--         		<span>${status.index}</span>
+        		<span>${imgvo.imgno}</span> --%>
         		<img src="<%= ctxPath %>/images/carousel/${imgvo.imgfilename}" style="width:100%; ">
         	</div>
         </c:if>              
@@ -222,8 +220,10 @@
   </div>
 </div>
 
+
+
 <div id = "My_Title">
-	<%-- <span>${sessionScope.gender}</span> --%>
+	<!--  <span>${sessionScope.gender}</span> -->
 	OUTER
 </div>
 
@@ -232,7 +232,7 @@
 <div id = "Catagorys">
 	<ul id = "CategoryLists">
 		<li>
-			<a style = "color:white;" href = "<%= ctxPath %>/TeamHomePage.neige">전체</a>
+			<a style = "color:white;" href = "<%= ctxPath %>/ManMain.neige">전체</a>
 		</li>
 		
 		<c:forEach var = "category" items = "${requestScope.categoryList}">
@@ -243,6 +243,7 @@
 		 
 	</ul>
 </div>
+
 
 <br>
 
@@ -281,9 +282,8 @@
 				</div>
 				<div class = "discription">
 					<ul>
-						<%-- 제품이름 --%>
-						<li><span class = "pName" style="font-weight: bold; font: ">${productMainImageVo.pdname}</span></li>
-						<li>
+						<li><span class = "pName" style="font-weight: bold; font: " >${productMainImageVo.pdname}</span></li>
+						<li> 
 						<c:if test="${productMainImageVo.price != productMainImageVo.saleprice }"> 
 								<span style = "text-decoration: line-through;">정상가 : ${productMainImageVo.price}원</span>
 						</c:if> <%-- 정상가와 세일가가 같지 않으면 정상가만 출력하고 같으면 판매가만 출력 --%>
@@ -294,17 +294,18 @@
                             <span>${item}</span>
                             <span class="dot" style="background-color:${item}"></span>
 						</c:forTokens>
-						<%-- <li style = "display: inline-block;"><span>${productMainImageVo.colores}</span></li> --%>
 						<li>
 							<span>상품번호${productMainImageVo.pdno}</span>
-						</li>
+						</li>						
 					</ul>
 				</div>
+			</div>
 		</li>
 	   </c:forEach>
 	</ul>
 </div>
 </div>
+ 
  
 <%-- TOP & DOWN 버튼 --%>
 
@@ -323,6 +324,5 @@
 	</ul>
 </div>
 
-<%-- div contents --%>
 
 <jsp:include page="footer.jsp" />

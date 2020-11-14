@@ -77,18 +77,10 @@
    
      width : 1380px;
    }
-   
-   .dot {
-     height: 10px;
-     width: 10px;
-     border: 1px solid #DCDCDC;
-     border-radius: 50%;
-     display: inline-block;
-   }   
    	
 </style>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="../header.jsp" />
 
 
 <script type="text/javascript">
@@ -131,48 +123,8 @@
 	        }, 400);
 	        return false;
 	    });
-	    	
+	    
 	});
-	
-	// 높은가격 클릭 시 이벤트
-	function highPriceClick() {
-		
-		$("li#sortHighPrice").click(function(){
-			
-			var sort = $(this).attr('value');
-			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;
-			
-			// var offset = $("#ItemLists").offset();
-			// alert("offset아 나와라" + offset.top);
-			// $('html').animate({scrollTop: offset.top}, 500);
-		});
-		
-	}
-	
-	// 낮은가격 클릭 시 이벤트
-	function lowPriceClick() {
-		
-		$("li#sortLowPrice").click(function(){
-			
-			var sort = $(this).attr('value');
-			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;
-		});		
-	}
-	
-	// 신상품 클릭 시 이벤트
-	function newProductClick() {
-		
-		$("li#sortNewProduct").click(function(){
-			
-			var sort = $(this).attr('value');
-			
-			location.href="<%= ctxPath%>/TeamHomePage.neige?sort="+sort;			
-			
-		});
-		
-	}
 
 </script>
 
@@ -223,24 +175,31 @@
 </div>
 
 <div id = "My_Title">
-	<%-- <span>${sessionScope.gender}</span> --%>
 	OUTER
 </div>
 
 
 <%-- 카테고리 --%>
 <div id = "Catagorys">
-	<ul id = "CategoryLists">
+	<ul>
 		<li>
-			<a style = "color:white;" href = "<%= ctxPath %>/TeamHomePage.neige">전체</a>
+			<a style = "color:white;" href = "<%= ctxPath %>/TeamHomePage2.up">전체</a>
 		</li>
-		
-		<c:forEach var = "category" items = "${requestScope.categoryList}">
-			<li>
-				<a style = "color:white;" href = "<%= ctxPath %>/category/categorySelectList.neige?pdcategory_fk=${category.cgcode}">${category.cgname}  </a>
-			</li>
-		</c:forEach>
-		 
+		<li>
+			<a style = "color:white;" href = "<%= ctxPath %>/category/coatList.up">코트</a>
+		</li>
+		<li>
+			<a style = "color:white;" href = "<%= ctxPath %>/category/jacketList.up">자켓</a>
+		</li>
+		<li>
+			<a style = "color:white;" href = "<%= ctxPath %>/category/jumperList.up">점퍼</a>
+		</li>
+		<li>
+			<a style = "color:white;" href = "<%= ctxPath %>/category/mustangList.up">무스탕</a>
+		</li>
+		<li>
+			<a style = "color:white;" href = "<%= ctxPath %>/category/cardiganList.up">가디건</a>
+		</li>
 	</ul>
 </div>
 
@@ -251,17 +210,17 @@
 <div id = "Order">
 	<div class="col-md-3" id="OrderList" style="margin-left: 1100px;">
 		<ul>
-			<li value= "sortNewProduct" id = "sortNewProduct">
-				<a href = "javascript:void(0);" onclick="newProductClick();"> 신상품 </a> <span class="delimiter">&#124;</span>			
+			<li>
+				<a href = "<%= ctxPath %>/product/newProductList.up"> 신상품 </a> <span class="delimiter">&#124;</span>			
 			</li>
-			<li value= "sortLowPrice" id = "sortLowPrice">
-				<a href = "javascript:void(0);" onclick="lowPriceClick();"> 낮은가격 </a> <span class="delimiter">&#124;</span>		
+			<li>
+				<a href = "<%= ctxPath %>/product/lowPricewProductList.up"> 낮은가격 </a> <span class="delimiter">&#124;</span>		
 			</li>
-			<li value = "sortHighPrice" id= "sortHighPrice">
-				<a href = "javascript:void(0);" onclick="highPriceClick();"> 높은가격 </a> <span class="delimiter">&#124;</span>		
+			<li>
+				<a href = "<%= ctxPath %>/product/highPriceProductList.up"> 높은가격 </a> <span class="delimiter">&#124;</span>		
 			</li>			
-			<li value = "sortBestProduct" id ="sortBestProduct">
-				<a href = "<%= ctxPath %>/product/productBestList.neige?gender=${sessionScope.gender}"> 인기상품 </a>					
+			<li>
+				<a href = "<%= ctxPath %>/product/productBestList.up"> 인기상품 </a>					
 			</li>						
 		</ul>
 	</div>	
@@ -273,33 +232,20 @@
 <div  id = "ItemLists" >
 <div class = "container">
 	<ul> 
-	  <c:forEach var="productMainImageVo" items="${productMainImageList}" varStatus="status" >
+	  <c:forEach var="imgvo" items="${imageList}" varStatus="status" >
 		<li>
 			<div class = "col-md-3" style="margin-bottom: 50px;" >
 				<div class = "productImg">
-					<img src = "<%= ctxPath %>/images2/${productMainImageVo.pdimage1}" /> 
+					<img src = "<%= ctxPath %>/images/${status.count}/${imgvo.imgfilename}" /> 
 				</div>
 				<div class = "discription">
 					<ul>
-						<%-- 제품이름 --%>
-						<li><span class = "pName" style="font-weight: bold; font: ">${productMainImageVo.pdname}</span></li>
-						<li>
-						<c:if test="${productMainImageVo.price != productMainImageVo.saleprice }"> 
-								<span style = "text-decoration: line-through;">정상가 : ${productMainImageVo.price}원</span>
-						</c:if> <%-- 정상가와 세일가가 같지 않으면 정상가만 출력하고 같으면 판매가만 출력 --%>
-								<span>&nbsp;&nbsp;판매가 : ${productMainImageVo.saleprice}원</span>
-						</li>
-						<%-- 컬러 리스트 넣는 부분 (반복문) --%>
-						<c:forTokens var="item" items="${productMainImageVo.colores}" delims=",">
-                            <span>${item}</span>
-                            <span class="dot" style="background-color:${item}"></span>
-						</c:forTokens>
-						<%-- <li style = "display: inline-block;"><span>${productMainImageVo.colores}</span></li> --%>
-						<li>
-							<span>상품번호${productMainImageVo.pdno}</span>
-						</li>
+						<li><span class = "pName" >log handmade coat</span></li> 
+						<li rel="판매가"><span>200,000원</span></li>
+						<li><span>그레이, 베이지, 블랙</span></li>
 					</ul>
 				</div>
+			</div>
 		</li>
 	   </c:forEach>
 	</ul>
@@ -325,4 +271,4 @@
 
 <%-- div contents --%>
 
-<jsp:include page="footer.jsp" />
+<jsp:include page="../footer.jsp" />

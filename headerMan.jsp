@@ -24,7 +24,7 @@
 
 	div#headerImg{
 		/* background-color: black; */
-		background-color: #F8ECDE;
+		background-color: #808080;
 	}
 	
 	div#headerMenuBar{
@@ -39,26 +39,26 @@
 		cursor: pointer;
 	}
 	
-	#Sist_Logo > ul >li  > a{
-		margin-left: 20px;
+	#Sist_Logo > a{
+		margin-left: 50px;
 		/*color: white;*/
-		color: #7B5232;
+		color: white;
 		font-size: 16pt;
 		font-weight: bold;
 	}	
 	
 	#Gender_Category > ul> li > a{
 		margin-left: 50px;
-		color: #7B5232;
+		color: white;
 		font-weight: bold;
 		font-size: 16pt;
 	}
 	
-	#neige > a:hover, #Gender_Category> ul > li > a:hover {
-		color: #7B5232;
+	#Sist_Logo > a:hover, #Gender_Category> ul > li > a:hover {
+		color: black;
 		font-weight: bold;
-		border-bottom: 3px solid white;
-		border-bottom-color: #8b4513;
+		border-bottom: 3px solid black;
+		border-bottom-color: black;
 		padding-bottom: 9px;
 	}
 	
@@ -67,10 +67,10 @@
 	}	
 	
 	#Main_Search_Input {
-		border: solid 3px #BCA897;	
+		border: solid 3px #666666;	
 		width: 250px;
 		height: 30px;
-		background-image: url("/TeamMVC/images2/icon_search.png");
+		background-image: url("/TeamMVC/images2/icon_search_black.png");
 		background-size: 30px 30px;
 		background-position: 200px;
 		background-repeat: no-repeat;
@@ -84,7 +84,7 @@
 
 	
 	#Login_MyInfo_Cart > a{
-		color : black;
+		color : white;
 		font-size : 11pt;
 	}
 	
@@ -116,7 +116,7 @@
 	}
 	
 	.delimiter {
-		color:black;
+		color:red;
 	}
 	
 	#Login_MyInfo_Cart > a.delimiter:hover {
@@ -133,7 +133,6 @@
 	}	
 
 </style>
-
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -157,40 +156,20 @@
 			var manVal = $(this).attr('value');
 			// alert("man"+ manVal);
 			
-			// 세션 스토리지 저장
-			sessionStorage.setItem("gender", manVal);
-						
 			location.href="<%= ctxPath %>/ManMain.neige?gender=" + manVal;
-			
+		
 		});
 	}
 	
 	function womenClick() {
 		$("li#women").click(function(){
-			
-			
-			
+		
 			var womenVal = $(this).attr('value');
 			// alert(womenVal);
 			
-			// sessionStrorage.setItem("gender", womanVal);
-			
 			location.href="<%= ctxPath %>/TeamHomePage.neige?gender=" + womenVal;
-			
-		});
-	}
-	
-	function neigeClick() {
 		
-		$("li#neige").click(function(){
-			
-			var neigeVal = $(this).attr('value');
-			// alert("하하 => " + neigeVal);
-			
-			location.href="<%= ctxPath %>/TeamHomePage.neige?gender=" + neigeVal;
-			
 		});
-		
 	}
 
 </script>
@@ -202,12 +181,8 @@
 <nav id = "nav" class="navbar navbar-inverse navbar-fixed-top" style = "border: none;">
 	<div id="headerImg">
 		<div class="row MainRow">
-			<div class="col-md-3" id = "Sist_Logo" >
-				<ul>
-					<li value = "2" id = "neige">
-						<a href="javascript:void(0);" onclick="neigeClick();">NEIGE</a>
-					</li>
-				</ul>
+			<div class="col-md-3" id = "Sist_Logo">
+				<a href="<%= ctxPath %>/TeamHomePage.neige">NEIGE</a>
 			</div>
 			
 			<div class="col-md-3" id="Gender_Category">
@@ -224,7 +199,7 @@
 			<div class="col-md-3" id = "Gender_Category">
 				<input type="text" placeholder="&nbsp;&nbsp;Search " name="Main_Search_Input" id="Main_Search_Input" />
 				<button type="button" id="Main_Search_Button"
-						style =  "background-color: #BCA897; border: none; color:#fff;
+						style =  "background-color: #515151; border: none; color:white;
 							      text-align: center; text-decoration: none; padding: 5px;
 							      display: inline-block; font-size: 16px; cursor: pointer;
 							      border-radius: 5px;"
@@ -242,7 +217,6 @@
             
 		</div>
 	</div>
-	
 	<%--
 	<div id="headerMenuBar">
 		<div id = "Menu_Items" class="row MainMenu">		
@@ -268,12 +242,10 @@
 			
 		</div>
 	</div>
-	--%>
+	 --%>
 </nav>
-
-<br><br>
 
 <div id="contents" align="center">
 
-<!-- <br><br><br><br><br><br> -->
+<br><br><br><br><br><br>
 

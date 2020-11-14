@@ -5,15 +5,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import common.controller.AbstractController;
 
-public class ProductCartAction extends AbstractController {
-	
-	// 
+public class ProductRegisterAction extends AbstractController {
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		String method = request.getMethod();
 		
+		super.setViewPage("/WEB-INF/product/productRegister.jsp");
 		
 	}
-	
+
 }
