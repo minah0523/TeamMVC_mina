@@ -34,8 +34,13 @@ public interface InterProductDAO {
 	// search페이지에 보여지는 상품이미지파일명을 모두 조회(select)하는 메소드 (MINA)
 	List<ProductVO> searchProduct(Map<String, String> paraMap) throws SQLException;
 
+	// 제품별 컬러 리스트를 조회하는 메서드 (MINA)
 	List<String> selectProductColor(String pdno) throws SQLException;
 
-	List<String> selectProductSize(String pdno) throws SQLException;	
+	// 제품별 사이즈 리스트를 조회하는 메서드 (MINA)
+	List<String> selectProductSize(String pdno) throws SQLException;
+
+	// 페이징처리를 위해서 검색상품에 대한 총페이지 개수 알아오기(select) (MINA) 
+	int getTotalPage(Map<String, String> paraMap) throws SQLException;	
 	
 }

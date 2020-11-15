@@ -1,5 +1,7 @@
 package myshop.model;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.sql.*;
 import java.util.*;
 
@@ -564,11 +566,16 @@ public class ProductDAO implements InterProductDAO {
 	      
 	      List<ProductVO> searchProductList = new ArrayList<>();
 
-	      
 	      try {
 	          conn = ds.getConnection();
 	          
-	          String sql = " select pdno, pdname, pdcategory_fk, pdimage1, pdimage2, price, saleprice, pdinputdate, pdgender ";
+	          String sql = " select pdno, pdname, pdcategory_fk, pdimage1, pdimage2, price, saleprice, pdinputdate, pdgender "
+	          		+ "from "+
+					"( "+
+					"    select rownum AS rno, pdno, pdname, pdcategory_fk, pdimage1, pdimage2, price, saleprice, pdinputdate, pdgender  "+
+					"    from "+
+					"    ( "+
+					"        select pdno, pdname, pdcategory_fk, pdimage1, pdimage2, price, saleprice, pdinputdate, pdgender  ";
 	          
 	          
 	          if( "1".equals(paraMap.get("pdgender")) || "2".equals(paraMap.get("pdgender"))) { // gender에 성별을 '여성(2)' '남성(1)' 입력했다면 
@@ -645,8 +652,17 @@ public class ProductDAO implements InterProductDAO {
 	             sql += " order by pdinputdate desc  ";
 	          }
 	          
+	          
+	          sql +=  "  	) V "+
+						") T  "+
+						"where rno between ? and ? ";
+	          
 	          pstmt = conn.prepareStatement(sql);
 	          
+	          
+	          // *** neige의 경우 1페이지당 아이템 16개씩 보여주기로 한다 *** //
+	          int currentShowPageNo = Integer.parseInt( paraMap.get("currentShowPageNo") );
+		      int sizePerPage = 16;
 	          
 	          if( "1".equals(paraMap.get("pdgender")) || "2".equals(paraMap.get("pdgender"))) {  // gender에 성별을 '여성(2)' '남성(1)' 입력했다면 
 	             
@@ -654,21 +670,29 @@ public class ProductDAO implements InterProductDAO {
 	                
 	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
 	                   pstmt.setString(1, paraMap.get("pdgender"));
+	                   pstmt.setInt(2, (currentShowPageNo * sizePerPage) - (sizePerPage - 1)); // 공식
+	   				   pstmt.setInt(3, (currentShowPageNo * sizePerPage)); // 공식 
 	                }
 	                else { //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
 	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
 	                   pstmt.setString(2, paraMap.get("pdgender"));
+	                   pstmt.setInt(3, (currentShowPageNo * sizePerPage) - (sizePerPage - 1)); // 공식
+	   				   pstmt.setInt(4, (currentShowPageNo * sizePerPage)); // 공식 
 	                }
 	             }    
 	             else { //searchname(키워드)에 입력이 되었다면,
 	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
 	                   pstmt.setString(1, paraMap.get("searchname"));
 	                   pstmt.setString(2, paraMap.get("pdgender"));
+	                   pstmt.setInt(3, (currentShowPageNo * sizePerPage) - (sizePerPage - 1)); // 공식
+	   				   pstmt.setInt(4, (currentShowPageNo * sizePerPage)); // 공식 
 	                }
 	                else {   //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
 	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
 	                   pstmt.setString(2, paraMap.get("searchname"));
 	                   pstmt.setString(3, paraMap.get("pdgender"));
+	                   pstmt.setInt(5, (currentShowPageNo * sizePerPage) - (sizePerPage - 1)); // 공식
+	   				   pstmt.setInt(6, (currentShowPageNo * sizePerPage)); // 공식 
 	                }
 	             }
 	                
@@ -677,18 +701,25 @@ public class ProductDAO implements InterProductDAO {
 	             if(paraMap.get("searchname") == null ) { //searchname(키워드)에 아무것도 입력하지 않았다면,
 	                if ( !"0".equals(paraMap.get("pdcategory_fk")) ) {  //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
 	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
+	                   pstmt.setInt(2, (currentShowPageNo * sizePerPage) - (sizePerPage - 1)); // 공식
+	   				   pstmt.setInt(3, (currentShowPageNo * sizePerPage)); // 공식 
 	                }
 	             }    
 	             else { //searchname(키워드)에 입력이 되었다면,
 	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
 	                   pstmt.setString(1, paraMap.get("searchname"));
+	                   pstmt.setInt(2, (currentShowPageNo * sizePerPage) - (sizePerPage - 1)); // 공식
+	   				   pstmt.setInt(3, (currentShowPageNo * sizePerPage)); // 공식 
 	                }
 	                else {   //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
 	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
 	                   pstmt.setString(2, paraMap.get("searchname"));
+	                   pstmt.setInt(3, (currentShowPageNo * sizePerPage) - (sizePerPage - 1)); // 공식
+	   				   pstmt.setInt(4, (currentShowPageNo * sizePerPage)); // 공식 
 	                }
 	             }
 	          }
+	          
 	          
 	          rs = pstmt.executeQuery();
 	          
@@ -778,6 +809,152 @@ public class ProductDAO implements InterProductDAO {
 	         return prodInfoList;
 	      }
 
+		// 페이징처리를 위해서 전체회원에 대한 총페이지 개수 알아오기(select) (Mina)
+		@Override
+		public int getTotalPage(Map<String, String> paraMap) throws SQLException {
+			int totalPage = 0;
+		          
+			conn = ds.getConnection();
+			          
+	          // *** neige의 경우 1페이지당 아이템 16개씩 보여주기로 한다 *** //
+	          String sql = " select ceil( count(*)/ 16 ) ";
+	          
+	          
+	          if( "1".equals(paraMap.get("pdgender")) || "2".equals(paraMap.get("pdgender"))) { // gender에 성별을 '여성(2)' '남성(1)' 입력했다면 
+	             if(paraMap.get("searchname") == null ) { //searchname(키워드)에 아무것도 입력하지 않았다면,
+	                
+	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+	                   sql += " from tbl_product "
+	                         + " where pdgender = ? ";
+	                }
+	                else { //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   sql += " from tbl_product "
+	                        + " where pdcategory_fk = ? and pdgender = ? ";
+	                }
+	             }
+	             else { //searchname(키워드)에 입력이 되었다면,
+	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+	                   sql += " from tbl_product "
+	                       + " where pdname like '%'|| ? ||'%' and pdgender = ?  ";
+	                }
+	                else {   //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   sql += " from tbl_product "
+	                      + " where pdcategory_fk = ? and pdname like '%'|| ? ||'%' and pdgender = ? ";   
+	                }
+	             }
+	             
+	          }// end of if( "1".equals(paraMap.get("pdgender")) || "2".equals(paraMap.get("pdgender")))-----------------------------
+	         
+	          else { // gender에 성별을 입력하지 않았거나 '전체'를 입력했다면,
+	             
+	             if(paraMap.get("searchname") == null ) { //searchname(키워드)에 아무것도 입력하지 않았다면,
+	                
+	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+	                   sql += " from tbl_product ";
+	                }
+	                else { //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   sql += " from tbl_product "
+	                        + " where pdcategory_fk = ? ";
+	                }
+	             }
+	             else { //searchname(키워드)에 입력이 되었다면,
+	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+	                   sql += " from tbl_product "
+	                       + " where pdname like '%'|| ? ||'%' ";
+	                }
+	                else {   //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   sql += " from tbl_product "
+	                      + " where pdcategory_fk = ? and pdname like '%'|| ? ||'%' ";   
+	                }
+	             }
+	             
+	          }// end of else -----------
+	          
+	          
+	          pstmt = conn.prepareStatement(sql);
+	          
+	          
+	          if( "1".equals(paraMap.get("pdgender")) || "2".equals(paraMap.get("pdgender"))) {  // gender에 성별을 '여성(2)' '남성(1)' 입력했다면 
+	             
+	             if(paraMap.get("searchname") == null ) { //searchname(키워드)에 아무것도 입력하지 않았다면,
+	                
+	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+	                   pstmt.setString(1, paraMap.get("pdgender"));
+	                }
+	                else { //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
+	                   pstmt.setString(2, paraMap.get("pdgender"));
+	                }
+	             }    
+	             else { //searchname(키워드)에 입력이 되었다면,
+	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+	                   pstmt.setString(1, paraMap.get("searchname"));
+	                   pstmt.setString(2, paraMap.get("pdgender"));
+	                }
+	                else {   //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
+	                   pstmt.setString(2, paraMap.get("searchname"));
+	                   pstmt.setString(3, paraMap.get("pdgender"));
+	                }
+	             }
+	                
+	          }
+	          else {  // gender에 성별을 입력하지 않았거나 '전체'를 입력했다면,
+	             if(paraMap.get("searchname") == null ) { //searchname(키워드)에 아무것도 입력하지 않았다면,
+	                if ( !"0".equals(paraMap.get("pdcategory_fk")) ) {  //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
+	                }
+	             }    
+	             else { //searchname(키워드)에 입력이 되었다면,
+	                if ( "0".equals(paraMap.get("pdcategory_fk")) ) { //pdcategory_fk(카테고리) 중 0(전체)을 선택했다면
+	                   pstmt.setString(1, paraMap.get("searchname"));
+	                }
+	                else {   //pdcategory_fk(카테고리) 중 0(전체)외에 다른 카테고리를 선택했다면
+	                   pstmt.setString(1, paraMap.get("pdcategory_fk"));
+	                   pstmt.setString(2, paraMap.get("searchname"));
+	                }
+	             }
+	          }
+	          
+	          
+	          rs = pstmt.executeQuery();
+	          
+	          rs.next();       
+	          
+	          totalPage = rs.getInt(1);
+             
+			return totalPage;		
+
+
+	}
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
